@@ -89,18 +89,27 @@
   const ecrireP = (k, v) => { try { localStorage.setItem(k, v); } catch {   } };
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
   const tx = () => TX[langue()] || TX.fr;
+  const ui = (k) => window.OB_TX?.[langue()]?.ui?.[k] ?? window.OB_TX?.fr?.ui?.[k] ?? k;
+  const ico = (k) => `<svg class="i" viewBox="0 0 24 24">${window.GTP_ICONES?.[k] || ""}</svg>`;
   function poserCadre() {
-    const c = D.cadre[langue()] || D.cadre.fr, p = c.pieces;
-    const met = (nom, html) => {
-      const place = document.querySelector(`[data-cadre="${nom}"]`), t = document.createElement("template");
-      t.innerHTML = html.replace(/ASINPilot/g, "GTINPilot").trim();
-      const el = t.content.firstElementChild; el.dataset.cadre = nom;
-      el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); toast(tx().seul); }, true);
-      el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toast(tx().seul); } }, true);
-      place.replaceWith(el);
-    };
-    met("header", p.header); met("tabs", p["#t1Tabs"]); met("brand", p["#t1Brand"]); met("side", p["#t1Side"]); met("mnav", p["#t1MNav"]);
-    document.body.className = c.bodyClass.replace(/\bt1-mv-home\b/, "").trim();
+    const th = document.documentElement.dataset.theme;
+    const menu = [["star", ui("m_produits"), [["m_liste"], ["m_smart"], ["m_repricer", 1], ["m_avis"]]], ["eye", ui("m_veille"), []], ["book", ui("m_rapports"), []], ["cfg", ui("m_reglages"), []]];
+    document.getElementById("dcStamp").textContent = tx().band;
+    const side = document.getElementById("dcSide");
+    side.innerHTML = `<div class="brand"><i></i>GTINPilot</div>` + menu.map(([i, l, k]) => `<div class="g">${ico(i)}${esc(l)}</div>${k.map(([x, on]) => `<div class="s${on ? " on" : ""}">${esc(ui(x))}</div>`).join("")}`).join("");
+    side.onclick = (e) => { if (!e.target.closest(".s.on")) toast(tx().seul); };
+    const top = document.getElementById("dcTop");
+    top.innerHTML = `<div class="mbrand"><i></i>GTINPilot</div><div class="search" data-dc-inerte>${ico("search")}<span>${esc(ui("rechercher"))}</span></div><span class="grow"></span>
+      <select class="tsel" id="dcLang" aria-label="${esc(tx().langue)}">${Object.entries(NOMS).map(([k, v]) => `<option value="${k}"${k === langue() ? " selected" : ""}>${esc(v)}</option>`).join("")}</select>
+      <button type="button" class="tbtn help" id="dcAide" title="${esc(ui("visite"))}" aria-label="${esc(ui("visite"))}">?</button>`;
+    top.querySelector("[data-dc-inerte]").onclick = () => toast(tx().seul);
+    top.querySelector("#dcLang").onchange = (e) => changerLangue(e.target.value);
+    let jn = document.getElementById("dcJourNuit");
+    if (!jn) { jn = document.createElement("button"); jn.type = "button"; jn.id = "dcJourNuit"; document.body.appendChild(jn);
+      jn.onclick = () => { theme(document.documentElement.dataset.theme === "light" ? "dark" : "light"); poserCadre();
+        window.dispatchEvent(new CustomEvent("app:geste", { detail: "theme" })); window.dispatchEvent(new Event("demo:theme")); window.dispatchEvent(new Event("app:rendu")); }; }
+    jn.title = tx().theme; jn.setAttribute("aria-label", tx().theme); jn.innerHTML = ico(th === "light" ? "moon" : "sun");
+    top.querySelector("#dcAide").onclick = () => window.VISITE?.menu?.();
     document.documentElement.lang = langue();
   }
   let tId;
@@ -110,50 +119,40 @@
     t.textContent = m; t.classList.add("on"); clearTimeout(tId); tId = setTimeout(() => t.classList.remove("on"), 2600);
   }
   function theme(th) { document.documentElement.dataset.theme = th; ecrireP("gtp.demo.theme", th); }
-  function bandeau() {
-    let b = document.getElementById("demoBand");
-    if (!b) { b = document.createElement("div"); b.id = "demoBand"; document.body.prepend(b); }
-    const th = document.documentElement.dataset.theme;
-    b.innerHTML = `<span class="db-dot" aria-hidden="true"></span><b>${esc(tx().band)}</b><span class="db-grow"></span>
-      <label class="db-l"><span class="sr-only">${esc(tx().langue)}</span><select id="dbLang">${Object.entries(NOMS).map(([k, v]) => `<option value="${k}"${k === langue() ? " selected" : ""}>${esc(v)}</option>`).join("")}</select></label>
-      <button type="button" class="db-b" id="dbTheme" aria-label="${esc(tx().theme)}">${esc(th === "light" ? tx().sombre : tx().clair)}</button>
-      <span class="db-sha" title="version du logiciel">${esc(D.sha)}</span><button type="button" class="db-b db-v" id="dbVisite">${esc(tx().btnVisite)}</button>`;
-    b.querySelector("#dbLang").onchange = (e) => changerLangue(e.target.value);
-    b.querySelector("#dbTheme").onclick = () => { theme(document.documentElement.dataset.theme === "light" ? "dark" : "light"); bandeau(); window.dispatchEvent(new Event("app:rendu")); };
-    b.querySelector("#dbVisite").onclick = () => window.VISITE?.menu?.();
-  }
   function changerLangue(lg) {
     lang = lg; ecrireP("gtp.demo.lang", lg);
-    poserCadre(); bandeau(); rpPaint();
+    poserCadre(); rpPaint();
     window.dispatchEvent(new Event("app:langue")); window.dispatchEvent(new Event("app:rendu"));
   }
   function accueil() {
     const o = document.createElement("div"); o.id = "demoAccueil"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true");
     const dessiner = () => {
       const th = document.documentElement.dataset.theme;
-      o.innerHTML = `<div class="da-c"><div class="da-band">${esc(tx().band)}</div><h2>${esc(tx().titre)}</h2><p>${esc(tx().sous)}</p>
+      o.innerHTML = `<div class="da-c"><div class="da-h"><div class="da-ch">GTINPilot · Repricer</div><h2>${esc(tx().titre)}</h2></div><div class="da-b"><div class="da-band">${esc(tx().band)}</div><p>${esc(tx().sous)}</p>
         <p class="da-q">${esc(tx().choix)}</p>
         <div class="da-l">${Object.entries(NOMS).map(([k, v]) => `<button type="button" data-lg="${k}" class="${k === langue() ? "on" : ""}">${esc(v)}</button>`).join("")}</div>
         <div class="da-t"><button type="button" data-th="light" class="${th === "light" ? "on" : ""}">${esc(tx().clair)}</button><button type="button" data-th="dark" class="${th !== "light" ? "on" : ""}">${esc(tx().sombre)}</button></div>
-        <div class="da-go"><button type="button" class="da-p" data-go="visite">${esc(tx().visite)}</button><button type="button" class="da-s" data-go="libre">${esc(tx().libre)}</button></div></div>`;
+        <div class="da-go"><button type="button" class="da-p" data-go="visite">${esc(tx().visite)}</button><button type="button" class="da-s" data-go="libre">${esc(tx().libre)}</button></div></div></div>`;
     };
     o.onclick = (e) => {
       const b = e.target.closest("button"); if (!b) return;
       if (b.dataset.lg) { changerLangue(b.dataset.lg); dessiner(); }
-      else if (b.dataset.th) { theme(b.dataset.th); bandeau(); dessiner(); }
+      else if (b.dataset.th) { theme(b.dataset.th); poserCadre(); dessiner(); }
       else if (b.dataset.go) { o.remove(); ecrireP("gtp.demo.vu", "1"); if (b.dataset.go === "visite") window.VISITE?.aller?.(1); }
     };
+    const surTheme = () => { if (o.isConnected) dessiner(); else window.removeEventListener("demo:theme", surTheme); };
+    window.addEventListener("demo:theme", surTheme);
     dessiner(); document.body.appendChild(o); o.querySelector(".da-p")?.focus();
   }
   window.GTP = {
-    toast, langue: changerLangue, theme: (th) => { theme(th); bandeau(); },
-    rafraichir() { poserCadre(); bandeau(); rpPaint(); },
+    toast, langue: changerLangue, theme: (th) => { theme(th); poserCadre(); },
+    rafraichir() { poserCadre(); rpPaint(); },
     demarrer() {
       const nav = (navigator.language || "fr").slice(0, 2), lg = lireP("gtp.demo.lang") || (TX[nav] ? nav : "en");
       lang = TX[lg] ? lg : "fr";
       theme(lireP("gtp.demo.theme") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
       history.replaceState(null, "", location.pathname + location.search + "#prix");
-      poserCadre(); bandeau();
+      poserCadre();
       rpEnter();
       accueil();
     },

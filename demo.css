@@ -1,19 +1,6 @@
 
-:root { --demo-band-h: 34px; }
-body { padding-top: var(--demo-band-h); }
-#demoBand { position: fixed; inset: 0 0 auto 0; height: var(--demo-band-h); z-index: 2147483000; display: flex; align-items: center; gap: 10px; padding: 0 12px;
-  font: 600 12.5px/1 Inter, system-ui, sans-serif; color: #1b1300; background: linear-gradient(90deg, #f5c451, #f0a93b); box-shadow: 0 1px 0 rgba(0,0,0,.18); }
-#demoBand b { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-#demoBand .db-dot { width: 8px; height: 8px; border-radius: 50%; background: #1b1300; flex: none; animation: dbp 2.4s ease-in-out infinite; }
-@keyframes dbp { 50% { opacity: .35; } }
-#demoBand .db-grow { flex: 1; }
-#demoBand select, #demoBand .db-b { height: 24px; border-radius: 6px; border: 1px solid rgba(27,19,0,.35); background: rgba(255,255,255,.55); color: #1b1300; font: 600 12px Inter, system-ui, sans-serif; padding: 0 8px; cursor: pointer; }
-#demoBand .db-v { background: #1b1300; color: #f5c451; border-color: #1b1300; }
-@media (prefers-reduced-motion: reduce) { #demoBand .db-dot { animation: none; } }
 
-#t1Side, #t1Brand { top: var(--demo-band-h) !important; }
-body.t1 .wrap > header { top: var(--demo-band-h) !important; }
-[data-cadre] { cursor: default; }
+  font: 600 12.5px/1 Inter, system-ui, sans-serif; color: #1b1300; background: linear-gradient(90deg, #f5c451, #f0a93b); box-shadow: 0 1px 0 rgba(0,0,0,.18); }
 #demoToast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 2147483001; transition: .2s;
   background: #1b1300; color: #fff; font: 600 13px Inter, system-ui, sans-serif; padding: 10px 14px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.35); max-width: calc(100vw - 32px); text-align: center; }
 #demoToast.on { opacity: 1; transform: translate(-50%, 0); }
@@ -34,6 +21,36 @@ body.t1 .wrap > header { top: var(--demo-band-h) !important; }
 #demoAccueil .da-p, #demoAccueil .da-s { flex: 1 1 200px; height: 44px; border-radius: 10px; font: 700 14px Inter, system-ui, sans-serif; cursor: pointer; }
 #demoAccueil .da-p { border: 0; background: var(--accent, #5fd0c0); color: var(--btn-ink, #0b0b0d); }
 #demoAccueil .da-s { border: 1px solid var(--line, rgba(255,255,255,.18)); background: transparent; color: var(--ink, #eef0f4); }
-@media (max-width: 600px) { #demoBand b { font-size: 11.5px; } #demoAccueil .da-c { padding: 20px 16px; } #demoAccueil h2 { font-size: 19px; } }
-#demoBand .db-sha { font: 600 10.5px ui-monospace, Menlo, monospace; opacity: .6; }
-@media (max-width: 600px) { #demoBand .db-sha { display: none; } }
+
+:root[data-theme="light"] #t1Repricer .rp-sec-id .rp-sech { background-image: linear-gradient(90deg, rgba(14,124,92,.36), rgba(14,124,92,.15)); }
+:root[data-theme="light"] #t1Repricer .rp-sec-warn .rp-sech { background-image: linear-gradient(90deg, rgba(143,90,0,.34), rgba(143,90,0,.13)); }
+:root[data-theme="light"] #t1Repricer .rp-sec-neu .rp-sech { background-image: linear-gradient(90deg, rgba(78,79,85,.27), rgba(78,79,85,.10)); }
+:root[data-theme="light"] #t1Repricer .rp-sec-info .rp-sech { background-image: linear-gradient(90deg, rgba(36,86,179,.31), rgba(36,86,179,.12)); }
+:root[data-theme="light"] #t1Repricer [data-rp-ind="tenue"] { background-color: rgba(14,124,92,.17); }
+:root[data-theme="light"] #t1Repricer [data-rp-ind="perdue"] { background-color: rgba(143,90,0,.17); }
+:root[data-theme="light"] #t1Repricer [data-rp-ind="aucune"] { background-color: rgba(36,86,179,.15); }
+:root[data-theme="light"] #t1Repricer [data-rp-ind="inconnue"], :root[data-theme="light"] #t1Repricer [data-rp-ind="offres"] { background-color: rgba(78,79,85,.15); }
+:root[data-theme="light"] .dc .side .s.on { background: rgba(14,124,92,.22); }
+:root[data-theme="light"] .dc .side { background: linear-gradient(180deg, #ffffff, #f3f6f5); }
+
+#demoAccueil .da-c { padding: 0; overflow: hidden; border: 1px solid rgba(36,202,153,.55); border-left-width: 3px; }
+#demoAccueil .da-h { padding: 14px 24px 13px; background: linear-gradient(90deg, rgba(36,202,153,.42), rgba(36,202,153,.14)); border-bottom: 1px solid rgba(36,202,153,.22); }
+#demoAccueil .da-ch { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted, #b0b0b0); margin-bottom: 3px; }
+#demoAccueil .da-h h2 { margin: 0; }
+#demoAccueil .da-b { padding: 18px 24px 22px; }
+#demoAccueil .da-l button, #demoAccueil .da-t button, #demoAccueil .da-s { background: linear-gradient(180deg, rgba(36,202,153,.10), rgba(36,202,153,.02)); border-color: rgba(36,202,153,.28);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 1px 2px rgba(0,0,0,.25); }
+#demoAccueil button.on { background: linear-gradient(180deg, rgba(36,202,153,.30), rgba(36,202,153,.12)); border-color: #24ca99; box-shadow: inset 0 0 0 1px #24ca99, inset 0 1px 0 rgba(255,255,255,.12); }
+#demoAccueil .da-p { background: linear-gradient(180deg, #3ee0b0, #1fae84); color: #08140f; box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 8px rgba(36,202,153,.35); }
+:root[data-theme="light"] #demoAccueil .da-c { border-color: rgba(14,124,92,.5); }
+:root[data-theme="light"] #demoAccueil .da-h { background: linear-gradient(90deg, rgba(14,124,92,.24), rgba(14,124,92,.07)); border-bottom-color: rgba(14,124,92,.2); }
+:root[data-theme="light"] #demoAccueil .da-ch { color: #4e4f55; }
+
+:root[data-theme="light"] :is(#demoAccueil .da-l button, #demoAccueil .da-t button, #demoAccueil .da-s, .vs-card .btn:not(.pri), .vs-start button, .vs-menu .mi, .dc .tsel, .dc .tbtn, #dcJourNuit,
+  #t1Repricer :is(.rp-bt, .rp-fact, .rp-fbtn, .rp-refbtn, .rp-rfbtn, .rp-rfact, .rp-go, .rp-btn2, .rp-spbt, .rp-spbtn, .rb-btn, .rb-vbt, .rp-seg > *, select)) {
+  background: linear-gradient(180deg, #ffffff, #eef6f2) !important; border: 1px solid rgba(14,124,92,.26) !important; box-shadow: inset 0 1px 0 #ffffff, 0 1px 2px rgba(14,124,92,.12) !important; }
+:root[data-theme="light"] :is(.vs-card .btn:not(.pri), .vs-start button, .dc .tbtn, #dcJourNuit, #t1Repricer :is(.rp-bt, .rp-fact, .rp-fbtn, .rp-rfbtn, .rp-rfact, .rp-go, .rb-btn)):hover {
+  background: linear-gradient(180deg, #f4fbf8, #e1f1ea) !important; border-color: rgba(14,124,92,.45) !important; }
+:root[data-theme="light"] :is(#demoAccueil button.on, #t1Repricer .rp-seg > .on, .vs-menu .mi.on) { background: linear-gradient(180deg, #e3f4ed, #cfeadf) !important; border-color: #0e7c5c !important; }
+:root[data-theme="light"] :is(#demoAccueil .da-p, .vs-card .btn.pri, #t1Repricer [data-rb-vok]) {
+  background: linear-gradient(180deg, #1fa37b, #0e7c5c) !important; border-color: #0b6b4f !important; color: #ffffff !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 2px 6px rgba(14,124,92,.30) !important; }
